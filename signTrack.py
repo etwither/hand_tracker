@@ -2,6 +2,7 @@ import cv2 as cv
 import argparse
 import mediapipe as mp
 
+#getting all the arguments
 def get_args():
     parser = argparse.ArgumentParser()
 
@@ -20,13 +21,14 @@ def get_args():
 #draws ladmarks for hands
 def draw_landmarks(frame, hands, mp_hands, mp_draw):
     #process the hands in the frame
-    result = hands.process(frame)
+    frame_rgb = cv.cvtColor(frame, cv.COLOR_BGR2RGB)
+    result = hands.process(frame_rgb)
 
     #place the landmarks in the image
     if result.multi_hand_landmarks:
         for hand_landmark in result.multi_hand_landmarks:
             mp_draw.draw_landmarks(frame, hand_landmark, mp_hands.HAND_CONNECTIONS)
-
+    
     return frame
 
 def main():
@@ -49,6 +51,8 @@ def main():
     #main loop
     while True:
         _,frame = cap.read()
+
+        #frame = cv.imread('hand1.png')
 
         frame = draw_landmarks(frame, hands, mp_hands, mp_draw)
 
