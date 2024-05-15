@@ -17,6 +17,18 @@ def get_args():
 
     return args
 
+#draws ladmarks for hands
+def draw_landmarks(frame, hands, mp_hands, mp_draw):
+    #process the hands in the frame
+    result = hands.process(frame)
+
+    #place the landmarks in the image
+    if result.multi_hand_landmarks:
+        for hand_landmark in result.multi_hand_landmarks:
+            mp_draw.draw_landmarks(frame, hand_landmark, mp_hands.HAND_CONNECTIONS)
+
+    return frame
+
 def main():
     #set arguments
     args = get_args()
@@ -38,17 +50,10 @@ def main():
     while True:
         _,frame = cap.read()
 
-        #change frame color for easier tracking
-        frame_rgb = cv.cvtColor(frame,cv.COLOR_BGR2RGB)
-        result = hands.process(frame_rgb)
-
-        #place the landmarks in the image
-        if result.multi_hand_landmarks:
-            for hand_landmark in result.multi_hand_landmarks:
-                mp_draw.draw_landmarks(frame_rgb, hand_landmark, mp_hands.HAND_CONNECTIONS)
+        frame = draw_landmarks(frame, hands, mp_hands, mp_draw)
 
         #display frame
-        cv.imshow("capture", frame_rgb)
+        cv.imshow("capture", frame)
 
         #wait for 'q' to be pressed
         if cv.waitKey(1) == ord('q'):
