@@ -34,9 +34,11 @@ def main():
     hands = mp_hands.Hands(static_image_mode=args.use_static_image_mode, max_num_hands=2, min_detection_confidence=args.min_detection_confidence, min_tracking_confidence=args.min_tracking_confidence)
     mp_draw = mp.solutions.drawing_utils
 
+    #main loop
     while True:
         _,frame = cap.read()
 
+        #change frame color for easier tracking
         frame_rgb = cv.cvtColor(frame,cv.COLOR_BGR2RGB)
         result = hands.process(frame_rgb)
 
@@ -45,6 +47,7 @@ def main():
             for hand_landmark in result.multi_hand_landmarks:
                 mp_draw.draw_landmarks(frame_rgb, hand_landmark, mp_hands.HAND_CONNECTIONS)
 
+        #display frame
         cv.imshow("capture", frame_rgb)
 
         #wait for 'q' to be pressed
