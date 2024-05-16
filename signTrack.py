@@ -33,6 +33,12 @@ def get_bounds(hands,shape):
 
     return int(y_min*shape[0]), int(y_max*shape[0]), int(x_min*shape[1]), int(x_max*shape[1])
 
+def left_or_right(lm,hand):
+    if lm[hand.THUMB_TIP].x < lm[hand.PINKY_TIP].x:
+        return "Left"
+    elif lm[hand.THUMB_TIP].x > lm[hand.PINKY_TIP].x:
+        return "Right"
+
 #draws ladmarks for hands
 def draw_landmarks(frame, hands, mp_hands, mp_draw):
     #process the hands in the frame
@@ -44,6 +50,7 @@ def draw_landmarks(frame, hands, mp_hands, mp_draw):
         for hand_landmark in result.multi_hand_landmarks:
             box = get_bounds(hand_landmark.landmark, frame.shape)
             cv.rectangle(frame, (box[2], box[0]), (box[3], box[1]), (0,255,0), 2)
+            cv.putText(frame, left_or_right(hand_landmark.landmark,mp_hands.HandLandmark) + " Hand", (box[2], box[0]-10), cv.FONT_HERSHEY_SIMPLEX, 0.5, (255, 0, 0), 2)
             mp_draw.draw_landmarks(frame, hand_landmark, mp_hands.HAND_CONNECTIONS)
 
     return frame
