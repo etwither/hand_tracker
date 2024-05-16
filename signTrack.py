@@ -18,6 +18,21 @@ def get_args():
 
     return args
 
+def get_bounds(hands,shape):
+    x = []
+    y = []
+    for lm in hands:
+        x.append(lm.x)
+        y.append(lm.y)
+
+    x_min = min(x)
+    x_max = max(x)
+
+    y_min = min(y)
+    y_max = max(y)
+
+    return int(y_min*shape[0]), int(y_max*shape[0]), int(x_min*shape[1]), int(x_max*shape[1])
+
 #draws ladmarks for hands
 def draw_landmarks(frame, hands, mp_hands, mp_draw):
     #process the hands in the frame
@@ -27,8 +42,10 @@ def draw_landmarks(frame, hands, mp_hands, mp_draw):
     #place the landmarks in the image
     if result.multi_hand_landmarks:
         for hand_landmark in result.multi_hand_landmarks:
+            box = get_bounds(hand_landmark.landmark, frame.shape)
+            cv.rectangle(frame, (box[2], box[0]), (box[3], box[1]), (0,255,0), 2)
             mp_draw.draw_landmarks(frame, hand_landmark, mp_hands.HAND_CONNECTIONS)
-    
+
     return frame
 
 def main():
@@ -52,8 +69,6 @@ def main():
     while True:
         _,frame = cap.read()
 
-        #frame = cv.imread('hand1.png')
-
         frame = draw_landmarks(frame, hands, mp_hands, mp_draw)
 
         #display frame
@@ -62,6 +77,9 @@ def main():
         #wait for 'q' to be pressed
         if cv.waitKey(1) == ord('q'):
             break
+
+    cap.release()
+    cv.destroyAllWindows()
 
 
 if __name__ == "__main__":
