@@ -18,6 +18,7 @@ def get_args():
 
     return args
 
+#gets bounds for the box
 def get_bounds(hands,shape):
     x = []
     y = []
@@ -33,11 +34,12 @@ def get_bounds(hands,shape):
 
     return int(y_min*shape[0]), int(y_max*shape[0]), int(x_min*shape[1]), int(x_max*shape[1])
 
-def left_or_right(lm,hand):
-    if lm[hand.THUMB_TIP].x < lm[hand.PINKY_TIP].x:
-        return "Left"
-    elif lm[hand.THUMB_TIP].x > lm[hand.PINKY_TIP].x:
-        return "Right"
+#labels hands left or right
+def left_or_right(frame, hand, box, i):
+    if hand[i].classification[0].index == 1:
+        cv.putText(frame, "Left Hand", (box[2], box[0]-10), cv.FONT_HERSHEY_SIMPLEX, 0.5, (255, 0, 0), 2)
+    elif hand[i].classification[0].index == 0:
+        cv.putText(frame, "Right Hand", (box[2], box[0]-10), cv.FONT_HERSHEY_SIMPLEX, 0.5, (255, 0, 0), 2)
 
 #draws ladmarks for hands
 def draw_landmarks(frame, hands, mp_hands, mp_draw):
@@ -46,12 +48,19 @@ def draw_landmarks(frame, hands, mp_hands, mp_draw):
     result = hands.process(frame_rgb)
 
     #place the landmarks in the image
+    i = 0
     if result.multi_hand_landmarks:
         for hand_landmark in result.multi_hand_landmarks:
+            #draw rectangle around hands
             box = get_bounds(hand_landmark.landmark, frame.shape)
             cv.rectangle(frame, (box[2], box[0]), (box[3], box[1]), (0,255,0), 2)
-            cv.putText(frame, left_or_right(hand_landmark.landmark,mp_hands.HandLandmark) + " Hand", (box[2], box[0]-10), cv.FONT_HERSHEY_SIMPLEX, 0.5, (255, 0, 0), 2)
+
+            #labels hands left or right
+            left_or_right(frame, result.multi_handedness, box, i)
+
+            #draw the landmarks
             mp_draw.draw_landmarks(frame, hand_landmark, mp_hands.HAND_CONNECTIONS)
+            i = i + 1
 
     return frame
 
