@@ -36,9 +36,9 @@ def get_bounds(hands,shape):
 
 #labels hands left or right
 def left_or_right(frame, hand, box, i):
-    if hand[i].classification[0].index == 1:
+    if hand[i].classification[0].index == 0:
         cv.putText(frame, "Left Hand", (box[2], box[0]-10), cv.FONT_HERSHEY_SIMPLEX, 0.5, (255, 0, 0), 2)
-    elif hand[i].classification[0].index == 0:
+    elif hand[i].classification[0].index == 1:
         cv.putText(frame, "Right Hand", (box[2], box[0]-10), cv.FONT_HERSHEY_SIMPLEX, 0.5, (255, 0, 0), 2)
 
 #draws ladmarks for hands
@@ -85,7 +85,7 @@ def main():
     while True:
         _,frame = cap.read()
 
-        frame = draw_landmarks(frame, hands, mp_hands, mp_draw)
+        frame = draw_landmarks(cv.flip(frame,1), hands, mp_hands, mp_draw)
 
         #display frame
         cv.imshow("capture", frame)
