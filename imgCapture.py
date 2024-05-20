@@ -14,8 +14,8 @@ def main():
     
     #create dir for the letter
     for i in range(NUM_OF_SETS):
-        if not os.path.exists(DATA_DIR+'/'+FILE_LETTERS[i]):
-            os.makedirs(DATA_DIR+'/'+FILE_LETTERS[i])
+        if not os.path.exists(os.path.join(DATA_DIR,FILE_LETTERS[i])):
+            os.makedirs(os.path.join(DATA_DIR,FILE_LETTERS[i]))
 
         while True:
             #get the frame
@@ -24,7 +24,7 @@ def main():
             if cv.waitKey(1) == ord('q'):
                 break
 
-        path = DATA_DIR+'/'+FILE_LETTERS[i]
+        path = os.path.join(DATA_DIR,FILE_LETTERS[i])
         for j in range(NUM_OF_IMAGES):
             ret, frame = cap.read()
             cv.imshow('Hand Capture', frame)
