@@ -2,7 +2,7 @@ import cv2 as cv
 import os
 
 def main():
-    NUM_OF_SETS = 2
+    NUM_OF_SETS = 26
     NUM_OF_IMAGES = 100
     FILE_LETTERS = ['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z']
     DATA_DIR = "./data"
@@ -28,7 +28,10 @@ def main():
         for j in range(NUM_OF_IMAGES):
             ret, frame = cap.read()
             cv.imshow('Hand Capture', frame)
+            cv.waitKey(1)
             cv.imwrite(path+'/'+str(j+1)+'.jpg',frame)
+        
+        print(FILE_LETTERS[i] + ' group complete')
 
 if __name__ == "__main__":
     main()
